@@ -9,7 +9,7 @@ import numpy as np
 
 
 class TransRec(nn.Module):
-    def __init__(self, embedding_dim, user2id, id2user, poi2id, id2poi, cuda=False):
+    def __init__(self, embedding_dim, user2id, id2user, poi2id, id2poi, _cuda=False):
         super(TransRec, self).__init__()
 
         self.user2id = user2id
@@ -27,8 +27,8 @@ class TransRec(nn.Module):
         self.init_weights()
         self.first_prediction = True
 
-        self.cuda = cuda
-        if self.cuda:
+        self._cuda = _cuda
+        if self._cuda:
             self.float_one = Variable(torch.cuda.FloatTensor([1.]))
             self.int_zero = Variable(torch.cuda.LongTensor([0]))
             self.float_zero = Variable(torch.cuda.FloatTensor([0.]))
