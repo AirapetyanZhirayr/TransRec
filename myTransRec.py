@@ -94,9 +94,9 @@ class TransRec(nn.Module):
                        self.user_embedding(user_id) +
                        self.user_global_embedding(self.int_zero))
         if self._cuda:
-            translation = torch.cat((translation,self.float_zero), 1).cpu().detach().numpy()
+            translation = torch.cat((translation,self.float_zero.unsqueeze(1)), 1).cpu().detach().numpy()
         else:
-            translation = torch.cat((translation,self.float_zero), 1).detach().numpy()
+            translation = torch.cat((translation,self.float_zero.unsqueeze(1)), 1).detach().numpy()
 
         _, indices = self.KNN.kneighbors(translation)
         indices = indices[0]
