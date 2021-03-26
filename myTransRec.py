@@ -47,7 +47,7 @@ class TransRec(nn.Module):
 
 
         user_personal = self.user_embedding(user_id)                        # [batch_size x embedding_dim]
-        user_global = self.user_global_embedding(torch.LongTensor([0]))     # [1          x embedding_dim]
+        user_global = self.user_global_embedding(self.int_zero)     # [1          x embedding_dim]
         prev_poi = self.poi_embedding(prev_id)                              # [batch_size x embedding_dim]
         pos_poi = self.poi_embedding(pos_id)                                # [batch_size x embedding_dim]
         neg_poi = self.poi_embedding(neg_id)                                # [batch_size x embedding_dim]
@@ -72,8 +72,12 @@ class TransRec(nn.Module):
         return objective
 
     def predict(self, user_id, pre_poi):
-        user_id = torch.LongTensor([user_id])
-        pre_poi = torch.LongTensor([pre_poi])
+        if self._cuda:
+            user_id = Variable(torch.cuda.LongTensor([user_id]))
+            pre_poi = Variable(torch.cuda.LongTensor([pre_poi]))
+        else:
+            user_id = torch.LongTensor([user_id])
+            pre_poi = torch.LongTensor([pre_poi])
         if  self.first_prediction == True:
             poi_biases = (self.poi_bias.weight.data.max() -  self.poi_bias.weight.data).sqrt()
             self.poi_vectors = torch.cat((self.poi_embedding.weight.data,
